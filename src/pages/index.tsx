@@ -1,39 +1,7 @@
-/*global kakao*/
-
-// import Layout from "@/components/Layout";
-// import Link from "next/link";
-import Script from "next/script";
-
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
+import Map from "@/components/Map";
 
 export default function Home() {
-  const loadKakaoMap = () => {
-    // kakao map 로드
-    window.kakao.maps.load(() => {
-      const mapContainer = document.getElementById("map");
-      const mapOption = {
-        center: new window.kakao.maps.LatLng(33.450701, 126.570667),
-        level: 3,
-      };
-      //new kakao.maps.Map(node, options);
-      new kakao.maps.Map(mapContainer, mapOption);
-    });
-  };
-  return (
-    <>
-      <Script
-        strategy="afterInteractive"
-        type="text/javascript"
-        src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_CLIENT}&autoload=false`}
-        onReady={loadKakaoMap}
-      />
-      <div id="map" className="w-full h-screen"></div>
-    </>
-  );
+  return <Map />;
 }
 
 // <h1 className="font-bold">Map Index Page</h1>
