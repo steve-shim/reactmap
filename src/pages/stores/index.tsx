@@ -1,23 +1,32 @@
 import Image from "next/image";
-import { StoreType } from "@/interface";
+import { StoreType, StoreApiResponse } from "@/interface";
 
 import { useQuery } from "react-query";
 
 import axios from "axios";
-
 import Loading from "@/components/Loading";
+import Pagination from "@/components/Pagination";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function StoreListPage() {
+  const router = useRouter();
+  const { page = "1" } = router.query;
+
+  console.log("page", page);
+
   const {
     isLoading,
     isError,
     data: stores,
-  } = useQuery("stores", async () => {
+  } = useQuery(`stores-${page}`, async () => {
+    // stores-${page} : 쿼리key는 페이지마다 다른 쿼리를 호출해야 하기 때문에
     // axios응답값이 data키에 담겨온다 + /api/stores로 API요청 보냄
-    const { data } = await axios("/api/stores");
-    return data as StoreType[];
+    const { data } = await axios(`/api/stores?page=${page}`);
+    return data as StoreApiResponse;
   });
 
+  console.log(stores);
   // if (isLoading) {
   //   return <span>Loading...</span>;
   // }
@@ -29,14 +38,13 @@ export default function StoreListPage() {
       </div>
     );
   }
-
   return (
     <div className="px-4 md:max-w-4xl mx-auto py-8">
       <ul role="list" className="divide-y divide-gray-100">
         {isLoading ? (
           <Loading />
         ) : (
-          stores?.map((store, index) => (
+          stores?.data?.map((store, index) => (
             <li className="flex justify-between gap-x-6 py-5" key={index}>
               <div className="flex gap-x-4">
                 <Image
@@ -71,6 +79,9 @@ export default function StoreListPage() {
           ))
         )}
       </ul>
+      {stores?.totalPage && (
+        <Pagination total={stores?.totalPage} page={page} />
+      )}
     </div>
   );
 }

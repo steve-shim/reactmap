@@ -11,7 +11,7 @@ export default function Markers({ stores, map, setCurrentStore }: MarkerProps) {
   const loadKakaoMarkers = useCallback(() => {
     if (map) {
       // 식당 데이터 마커 띄우기
-      stores?.map((store) => {
+      stores?.data?.map((store) => {
         var imageSrc = store?.category
             ? `/images/markers/${store?.category}.png`
             : "/images/markers/default.png", // 마커이미지의 주소입니다
