@@ -6,7 +6,7 @@ import { StoreType, StoreApiResponse } from "@/interface";
 import { useQuery, useInfiniteQuery } from "react-query";
 
 import axios from "axios";
-// import Loader from "@/components/Loader";
+import Loader from "@/components/Loader";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 
 import Loading from "@/components/Loading";
@@ -19,8 +19,9 @@ export default function StoreListPage() {
   const { page = "1" } = router.query;
   const ref = useRef<HTMLDivElement | null>(null);
   const pageRef = useIntersectionObserver(ref, {});
+  const isPageEnd = !!pageRef?.isIntersecting;
 
-  console.log("pageRef", pageRef);
+  console.log("isPageEnd", isPageEnd);
 
   // const {
   //   isLoading,
@@ -59,6 +60,26 @@ export default function StoreListPage() {
   // if (isLoading) {
   //   return <span>Loading...</span>;
   // }
+
+  const fetchNext = useCallback(async () => {
+    const res = await fetchNextPage();
+    if (res.isError) {
+      console.log(res.error);
+    }
+  }, [fetchNextPage]);
+
+  useEffect(() => {
+    let timerId: NodeJS.Timeout | undefined;
+
+    if (isPageEnd && hasNextPage) {
+      timerId = setTimeout(() => {
+        fetchNext();
+      }, 500);
+    }
+
+    return () => clearTimeout(timerId);
+  }, [fetchNext, isPageEnd, hasNextPage]);
+
   console.log("stores", stores);
   if (isError) {
     return (
@@ -119,8 +140,8 @@ export default function StoreListPage() {
         Next Page
       </button>
        */}
-      {/* {(isFetching || hasNextPage || isFetchingNextPage) && <Loader />} */}
-      <div className="w-full touch-none h-10 mb-10" ref={ref} />
+      {(isFetching || hasNextPage || isFetchingNextPage) && <Loader />}
+      <div className="w-full touch-none h-10 mb-10 bg-red-500" ref={ref} />
     </div>
   );
 }
