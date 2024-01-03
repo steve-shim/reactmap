@@ -9,7 +9,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { data, status } = useSession();
 
-  console.log(data, status);
+  //console.log(data, status); 로그인 유저정보 확인
   return (
     <>
       <div className="navbar">

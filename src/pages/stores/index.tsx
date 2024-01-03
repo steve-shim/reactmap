@@ -7,6 +7,7 @@ import { useQuery, useInfiniteQuery } from "react-query";
 
 import axios from "axios";
 import Loader from "@/components/Loader";
+import SearchFilter from "@/components/SearchFilter";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 
 import Loading from "@/components/Loading";
@@ -90,6 +91,7 @@ export default function StoreListPage() {
   }
   return (
     <div className="px-4 md:max-w-4xl mx-auto py-8">
+      <SearchFilter />
       <ul role="list" className="divide-y divide-gray-100">
         {isLoading ? (
           <Loading />
